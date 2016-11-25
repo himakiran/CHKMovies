@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Picasso;
+
 /**
  * Created by userhk on 25/11/16.
  * Code copied from https://www.tutorialspoint.com/android/android_grid_view.htm
@@ -54,14 +56,24 @@ public class ImageAdapter extends BaseAdapter {
             https://myskillset.wordpress.com/2013/07/05/android-setting-size-of-grid-view-items-according-to-screensize/
              */
             //imageView.setLayoutParams(new GridView.LayoutParams((int)mContext.getResources().getDimension(R.dimen.width), (int)mContext.getResources().getDimension(R.dimen.height)));
-
+            /*
+            The below code solves the layout problem to show the images in equalsized tiles..
+            http://stackoverflow.com/questions/23204755/how-to-set-image-size-in-grid-view
+             */
             imageView.setLayoutParams(new RelativeLayout.LayoutParams((int) mContext.getResources().getDimension(R.dimen.width), (int) mContext.getResources().getDimension(R.dimen.height)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(0, 0, 0, 0);
         } else {
             imageView = (ImageView) convertView;
         }
-        imageView.setImageResource(mThumbIds[position]);
+
+        Picasso
+                .with(mContext)
+                .load(mThumbIds[position])
+                .fit() // will explain later
+                .into(imageView);
+
+        //imageView.setImageResource(mThumbIds[position]);
         return imageView;
     }
 }
