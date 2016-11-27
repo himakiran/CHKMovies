@@ -2,6 +2,7 @@ package com.example.android.chkmovies;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -18,21 +19,28 @@ import com.squareup.picasso.Picasso;
 
 public class ImageAdapter extends BaseAdapter {
     // Keep all Images in array
-    public Integer[] mThumbIds = {
-            R.drawable.img1, R.drawable.img2,
-            R.drawable.img3, R.drawable.img4,
-            R.drawable.img5, R.drawable.img6
-
-    };
+    private String[] mThumbIds = {"http://image.tmdb.org/t/p/w185/9HE9xiNMEFJnCzndlkWD7oPfAOx.jpg", "http://image.tmdb.org/t/p/w185/xfWac8MTYDxujaxgPVcRD9yZaul.jpg"};
     private Context mContext;
+
 
     // Constructor
     public ImageAdapter(Context c) {
         mContext = c;
+       /* mThumbIds = new String[imageArray.length];
+        for(int i=0; i < imageArray.length; i++){
+            mThumbIds[i] = imageArray[i];
+            Log.v("CHK-mThumbsId",mThumbIds[i]);
+            }*/
+
+
+
     }
 
+    /*
+    we r not using the below getCount() , getItem() and getItemId()
+     */
     public int getCount() {
-        return mThumbIds.length;
+        return 0;
     }
 
     public Object getItem(int position) {
@@ -66,14 +74,14 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-
+        Log.v("CHK-IMG-ADAPTER", "GET-VIEW");
         Picasso
                 .with(mContext)
                 .load(mThumbIds[position])
                 .fit() // will explain later
                 .into(imageView);
 
-        //imageView.setImageResource(mThumbIds[position]);
+
         return imageView;
     }
 }

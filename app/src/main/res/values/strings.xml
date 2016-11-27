@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CHK Movies</string>
     <string name="action_settings">Settings</string>
+    <string name="api_key">c690562b8ea669d80e602902ea80a888</string>
 </resources>
