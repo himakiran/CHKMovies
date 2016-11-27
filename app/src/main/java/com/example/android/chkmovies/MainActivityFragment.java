@@ -60,6 +60,7 @@ public class MainActivityFragment extends Fragment {
         // we set the image adapter in the gridview and then return the rootview
         // the image adapter is initialized with the movieStrs in the postexecute of fetch task.
         //Log.v("CHK-MAIN-ACTVITY-FRAGT",fetch.imgAdapter.toString());
+        IMG = new ImageAdapter(getContext());
 
         gridview.setAdapter(IMG);
 
@@ -186,12 +187,12 @@ public class MainActivityFragment extends Fragment {
             super.onPostExecute(strings);
             Log.v("CHK-FETCH", "CHK-postexec");
 
-            imageUrlArray = new String[strings.length];
+            /*imageUrlArray = new String[strings.length];
             for (int i = 0; i < strings.length; i++) {
                 imageUrlArray[i] = strings[i];
                 Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
-            }
-            IMG = new ImageAdapter(getContext(), imageUrlArray);
+            }*/
+
             return;
         }
 

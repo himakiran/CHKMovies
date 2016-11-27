@@ -3,6 +3,7 @@ package com.example.android.chkmovies;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,18 +20,22 @@ import com.squareup.picasso.Picasso;
 
 public class ImageAdapter extends BaseAdapter {
     // Keep all Images in array
-    private String[] mThumbIds;
+    private String[] mThumbIds = {"http://image.tmdb.org/t/p/w185/9HE9xiNMEFJnCzndlkWD7oPfAOx.jpg", "http://image.tmdb.org/t/p/w185/xfWac8MTYDxujaxgPVcRD9yZaul.jpg",
+            "http://image.tmdb.org/t/p/w185/4Iu5f2nv7huqvuYkmZvSPOtbFjs.jpg", "http://image.tmdb.org/t/p/w185/lFSSLTlFozwpaGlO31OoUeirBgQ.jpg",
+            "http://image.tmdb.org/t/p/w185/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg", "http://image.tmdb.org/t/p/w185/5N20rQURev5CNDcMjHVUZhpoCNC.jpg"};
     private Context mContext;
+    private LayoutInflater inflater;
 
 
     // Constructor
-    public ImageAdapter(Context c, String[] imageArray) {
+    public ImageAdapter(Context c) {
         mContext = c;
-        mThumbIds = new String[imageArray.length];
+        inflater = LayoutInflater.from(c);
+       /* mThumbIds = new String[imageArray.length];
         for(int i=0; i < imageArray.length; i++){
             mThumbIds[i] = imageArray[i];
             Log.v("CHK-mThumbsId",mThumbIds[i]);
-        }
+        }*/
 
 
 
@@ -39,19 +44,27 @@ public class ImageAdapter extends BaseAdapter {
     /*
     we r not using the below getCount() , getItem() and getItemId()
      */
+    @Override
     public int getCount() {
-        return 0;
+        return mThumbIds.length;
     }
 
+    @Override
     public Object getItem(int position) {
         return null;
     }
 
+    @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
+
     }
 
     // create a new ImageView for each item referenced by the Adapter
+    /*
+     Reference : http://www.androidtrainee.com/picasso-image-loader-with-gridview-for-android/
+     */
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
 
