@@ -255,9 +255,7 @@ public class MainActivityFragment extends Fragment {
 
     public class ImageAdapter extends BaseAdapter {
         // Keep all Images in array
-        private String[] mThumbIds = {"http://image.tmdb.org/t/p/w185/9HE9xiNMEFJnCzndlkWD7oPfAOx.jpg", "http://image.tmdb.org/t/p/w185/xfWac8MTYDxujaxgPVcRD9yZaul.jpg",
-                "http://image.tmdb.org/t/p/w185/4Iu5f2nv7huqvuYkmZvSPOtbFjs.jpg", "http://image.tmdb.org/t/p/w185/lFSSLTlFozwpaGlO31OoUeirBgQ.jpg",
-                "http://image.tmdb.org/t/p/w185/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg", "http://image.tmdb.org/t/p/w185/5N20rQURev5CNDcMjHVUZhpoCNC.jpg"};
+        private String[] mThumbIds;
         private Context mContext;
         private LayoutInflater inflater;
 
