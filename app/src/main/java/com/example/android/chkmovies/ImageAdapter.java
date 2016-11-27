@@ -19,18 +19,18 @@ import com.squareup.picasso.Picasso;
 
 public class ImageAdapter extends BaseAdapter {
     // Keep all Images in array
-    private String[] mThumbIds = {"http://image.tmdb.org/t/p/w185/9HE9xiNMEFJnCzndlkWD7oPfAOx.jpg", "http://image.tmdb.org/t/p/w185/xfWac8MTYDxujaxgPVcRD9yZaul.jpg"};
+    private String[] mThumbIds;
     private Context mContext;
 
 
     // Constructor
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c, String[] imageArray) {
         mContext = c;
-       /* mThumbIds = new String[imageArray.length];
+        mThumbIds = new String[imageArray.length];
         for(int i=0; i < imageArray.length; i++){
             mThumbIds[i] = imageArray[i];
             Log.v("CHK-mThumbsId",mThumbIds[i]);
-            }*/
+        }
 
 
 
@@ -78,7 +78,7 @@ public class ImageAdapter extends BaseAdapter {
         Picasso
                 .with(mContext)
                 .load(mThumbIds[position])
-                .fit() // will explain later
+                .fit()
                 .into(imageView);
 
 

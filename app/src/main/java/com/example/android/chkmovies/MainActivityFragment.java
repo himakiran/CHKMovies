@@ -29,9 +29,8 @@ import static com.example.android.chkmovies.R.layout.fragment_main;
  */
 public class MainActivityFragment extends Fragment {
 
-    // imageUrlArray contains an array of image urls got from themoviedb
-
-    public String[] imageUrlArray;
+    // IMG is the imageadpater that gets executed in postexecute of fetchMovie.
+    public ImageAdapter IMG;
 
     public MainActivityFragment() {
     }
@@ -62,7 +61,7 @@ public class MainActivityFragment extends Fragment {
         // the image adapter is initialized with the movieStrs in the postexecute of fetch task.
         //Log.v("CHK-MAIN-ACTVITY-FRAGT",fetch.imgAdapter.toString());
 
-        gridview.setAdapter(new ImageAdapter(getContext()));
+        gridview.setAdapter(IMG);
 
 
 
@@ -73,6 +72,7 @@ public class MainActivityFragment extends Fragment {
 
         // Will contain the raw JSON response as a string.
         public String moviesJsonStr;
+        public String[] imageUrlArray;
 
 
         // Will store the context
@@ -191,7 +191,7 @@ public class MainActivityFragment extends Fragment {
                 imageUrlArray[i] = strings[i];
                 Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
             }
-
+            IMG = new ImageAdapter(getContext(), imageUrlArray);
             return;
         }
 
