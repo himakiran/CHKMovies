@@ -51,33 +51,15 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.popular:
-                popular = true;
-                item.setChecked(true);
-                Log.v("CHK-ONOPTION-POPLR", item.toString());
-                updateView(item);
-                return true;
-            case R.id.top_rated:
-                popular = false;
-                item.setChecked(true);
-                Log.v("CHK-ONOPTION-RATED", item.toString());
-                updateView(item);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     public void updateView(MenuItem item) {
@@ -88,6 +70,30 @@ public class MainActivityFragment extends Fragment {
         gridview.refreshDrawableState();
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.popular:
+                popular = true;
+                item.setChecked(true);
+                updateView(item);
+                Log.v("CHK-ONOPTION-POPLR", item.toString());
+
+                return true;
+            case R.id.top_rated:
+                popular = false;
+                item.setChecked(true);
+                updateView(item);
+                Log.v("CHK-ONOPTION-RATED", item.toString());
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 
 
     @Override
@@ -326,10 +332,14 @@ public class MainActivityFragment extends Fragment {
 
             FetchMovie fetch = new FetchMovie(c);
             try {
-                if (MainActivityFragment.this.popular == true)
+                if (MainActivityFragment.this.popular == true) {
                     mThumbIds = fetch.execute("popular").get();
-                else
+                    Log.v("CHK-IMG-ADPTR", "this-poplr-true");
+                }
+                else {
                     mThumbIds = fetch.execute("top_rated").get();
+                    Log.v("CHK-IMG-ADPTR", "this-poplr-false");
+                }
 
             } catch (java.util.concurrent.ExecutionException | java.lang.InterruptedException k) {
                 Log.e("CHK-IMG-ADP-Fetch", "fetchtask", k);
@@ -359,6 +369,10 @@ public class MainActivityFragment extends Fragment {
         @Override
         public void notifyDataSetChanged() // Create this function in your adapter class
         {
+
+            IMG = new ImageAdapter(getContext());
+
+            gridview.setAdapter(IMG);
             super.notifyDataSetChanged();
         }
 
