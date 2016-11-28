@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -36,10 +39,56 @@ public class MainActivityFragment extends Fragment {
 
     // IMG is the imageadpater that gets executed in postexecute of fetchMovie.
     public ImageAdapter IMG;
+    // stores the value of the toggle setting
+    public Boolean popular = true;
 
+    public GridView gridview;
 
     public MainActivityFragment() {
     }
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Do something that differs the Activity's menu here
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.popular:
+                popular = true;
+                item.setChecked(true);
+                Log.v("CHK-ONOPTION-POPLR", item.toString());
+                updateView(item);
+                return true;
+            case R.id.top_rated:
+                popular = false;
+                item.setChecked(true);
+                Log.v("CHK-ONOPTION-RATED", item.toString());
+                updateView(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void updateView(MenuItem item) {
+        Log.v("CHK-UPDT-VIEW", item.toString());
+
+        IMG.notifyDataSetChanged();
+        gridview.invalidateViews();
+        gridview.refreshDrawableState();
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +102,7 @@ public class MainActivityFragment extends Fragment {
 
         // The we use the rootview to get the gridview
 
-        GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
+        gridview = (GridView) rootView.findViewById(R.id.gridview);
 
         // we set the image adapter in the gridview and then return the rootview
         // the image adapter is initialized with the movieStrs in the postexecute of fetch task.
@@ -66,6 +115,7 @@ public class MainActivityFragment extends Fragment {
 
         return rootView;
     }
+
 
     public class FetchMovie extends AsyncTask<String, String, String[]> {
 
@@ -183,12 +233,12 @@ public class MainActivityFragment extends Fragment {
             //You will get your string array result here .
             // do whatever operations you want to do
             super.onPostExecute(strings);
-            Log.v("CHK-FETCH", "CHK-postexec");
+            //Log.v("CHK-FETCH", "CHK-postexec");
 
             imageUrlArray = new String[strings.length];
             for (int i = 0; i < strings.length; i++) {
                 imageUrlArray[i] = strings[i];
-                Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
+                //Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
             }
 
             return;
@@ -260,6 +310,7 @@ public class MainActivityFragment extends Fragment {
         private LayoutInflater inflater;
 
 
+
         // Constructor
         public ImageAdapter(Context c) {
             mContext = c;
@@ -275,7 +326,11 @@ public class MainActivityFragment extends Fragment {
 
             FetchMovie fetch = new FetchMovie(c);
             try {
-                mThumbIds = fetch.execute("popular").get();
+                if (MainActivityFragment.this.popular == true)
+                    mThumbIds = fetch.execute("popular").get();
+                else
+                    mThumbIds = fetch.execute("top_rated").get();
+
             } catch (java.util.concurrent.ExecutionException | java.lang.InterruptedException k) {
                 Log.e("CHK-IMG-ADP-Fetch", "fetchtask", k);
             }
@@ -299,6 +354,12 @@ public class MainActivityFragment extends Fragment {
         public long getItemId(int position) {
             return position;
 
+        }
+
+        @Override
+        public void notifyDataSetChanged() // Create this function in your adapter class
+        {
+            super.notifyDataSetChanged();
         }
 
         // create a new ImageView for each item referenced by the Adapter
@@ -328,7 +389,7 @@ public class MainActivityFragment extends Fragment {
             } else {
                 imageView = (ImageView) convertView;
             }
-            Log.v("CHK-IMG-ADAPTER", "GET-VIEW");
+            //Log.v("CHK-IMG-ADAPTER", "GET-VIEW");
             Picasso
                     .with(mContext)
                     .load(mThumbIds[position])

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,5 +7,25 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never">
+        <menu>
+            <group xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/radio_settings"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:checkableBehavior="single"
+                android:orientation="vertical">
+                <item
+                    android:id="@+id/popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:title="@string/popular" />
+                <item
+                    android:id="@+id/top_rated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:title="@string/toprated" />
+            </group>
+        </menu>
+    </item>
 </menu>
