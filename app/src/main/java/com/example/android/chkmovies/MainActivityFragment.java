@@ -259,16 +259,7 @@ public class MainActivityFragment extends Fragment {
             super.onPostExecute(w);
             //Log.v("CHK-FETCH", "CHK-postexec");
 
-            imageUrlArray = new String[w.w_imageUrlArray.length];
-            for (int i = 0; i < w.w_imageUrlArray.length; i++) {
-                imageUrlArray[i] = w.w_imageUrlArray[i];
-                //Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
-            }
-            movieIDArray = new int[w.w_movieIDArray.length];
-            for (int i = 0; i < w.w_movieIDArray.length; i++) {
-                movieIDArray[i] = w.w_movieIDArray[i];
-                //Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
-            }
+
 
             return;
         }
@@ -379,12 +370,12 @@ public class MainActivityFragment extends Fragment {
             try {
                 if (MainActivityFragment.this.popular == true) {
                     mThumbIds = fetch.execute("popular").get().w_imageUrlArray;
-                    movIDArray = fetch.execute("popular").get().w_movieIDArray;
+                    //movIDArray = fetch.execute("popular").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-true");
                 }
                 else {
                     mThumbIds = fetch.execute("top_rated").get().w_imageUrlArray;
-                    movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
+                    //movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-false");
                 }
 
