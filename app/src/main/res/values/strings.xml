@@ -4,4 +4,5 @@
     <string name="api_key">c690562b8ea669d80e602902ea80a888</string>
     <string name="popular">Popular</string>
     <string name="toprated">Top Rated</string>
+    <string name="title_activity_detail">DetailActivity</string>
 </resources>

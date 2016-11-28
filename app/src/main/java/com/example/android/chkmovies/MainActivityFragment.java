@@ -1,6 +1,7 @@
 package com.example.android.chkmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -116,31 +118,50 @@ public class MainActivityFragment extends Fragment {
 
         gridview.setAdapter(IMG);
 
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                /*The code below illustrates making a new intent, declaring the second activity to open
+                ie DetailActivity and then pass a string parameter ie forecast. which will be used
+                by the onCreateView() in detailActivity to set the weataher string.
+                It also passes geo which shall be used by the if (id == R.id.detail_see_map)
+                function in detailActivity to set the Uri.
+                 */
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra("mov_ID", IMG.movIDArray[position]);
+
+                startActivity(intent);
+            }
+        });
+
+
 
 
         return rootView;
     }
 
 
-    public class FetchMovie extends AsyncTask<String, String, String[]> {
+    public class FetchMovie extends AsyncTask<String, String, FetchMovie.Wrapper> {
 
         // Will contain the raw JSON response as a string.
         public String moviesJsonStr;
         public String[] imageUrlArray;
+        public int[] movieIDArray;
+        public Context fcontext;
+
 
 
         // Will store the context
-
-        public Context fcontext;
 
         public FetchMovie(Context c) {
 
             fcontext = c;
         }
 
-
         @Override
-        protected String[] doInBackground(String... params) {
+        protected Wrapper doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -219,41 +240,45 @@ public class MainActivityFragment extends Fragment {
 
 
             try {
-                getImageURLs(moviesJsonStr);
+                getImageURLsMovieIDs(moviesJsonStr);
             } catch (Exception e) {
                 Log.e("CHK-DO-IN-BACKGROUND", "CHK-GET-IMG-URL", e);
             }
-            return imageUrlArray;
+            Wrapper w = new Wrapper();
+            w.w_imageUrlArray = imageUrlArray;
+            w.w_movieIDArray = movieIDArray;
+            return w;
 
 
         }
-    /*
-       This code takes the results of the execution ie array of URLs imageURLs and converts it into
-       string arrays.
-
-     */
 
         @Override
-        protected void onPostExecute(String[] strings) {
+        protected void onPostExecute(Wrapper w) {
             //You will get your string array result here .
             // do whatever operations you want to do
-            super.onPostExecute(strings);
+            super.onPostExecute(w);
             //Log.v("CHK-FETCH", "CHK-postexec");
 
-            imageUrlArray = new String[strings.length];
-            for (int i = 0; i < strings.length; i++) {
-                imageUrlArray[i] = strings[i];
+            imageUrlArray = new String[w.w_imageUrlArray.length];
+            for (int i = 0; i < w.w_imageUrlArray.length; i++) {
+                imageUrlArray[i] = w.w_imageUrlArray[i];
+                //Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
+            }
+            movieIDArray = new int[w.w_movieIDArray.length];
+            for (int i = 0; i < w.w_movieIDArray.length; i++) {
+                movieIDArray[i] = w.w_movieIDArray[i];
                 //Log.v("CHK-ON-POST-EXEC", imageUrlArray[i]);
             }
 
             return;
         }
+    /*
+       This code takes the results of the execution ie array of URLs imageURLArray and movieIDArray  and converts it into
+       string arrays and int arrays.
 
-        /*
-         This code receives the moviesJsonStr and returns an array of image Urls.
-         */
+     */
 
-        public void getImageURLs(String movieStr) {
+        public void getImageURLsMovieIDs(String movieStr) {
 
             JSONObject movieObject;
             String imgPath;
@@ -262,19 +287,24 @@ public class MainActivityFragment extends Fragment {
             String mUrl;
             URL[] imageURLs;
 
+            int movID;
+
 
             try {
                 JSONObject movieJson = new JSONObject(movieStr);
                 JSONArray moviesJsonArray = movieJson.getJSONArray("results");
                 imageURLs = new URL[moviesJsonArray.length()];
+
                 imageUrlArray = new String[moviesJsonArray.length()];
+                movieIDArray = new int[moviesJsonArray.length()];
                 for (int i = 0; i < moviesJsonArray.length(); i++) {
                     movieObject = moviesJsonArray.getJSONObject(i);
                     /*
-                     .substring(2) is required to get rid of "/\" in the poster path
+                     .substring(1) is required to get rid of "\" in the poster path
                      "\/9HE9xiNMEFJnCzndlkWD7oPfAOx.jpg"
                      */
                     imgPath = movieObject.getString("poster_path").substring(1);
+                    movID = movieObject.getInt("id");
 
                     imgURL = new Uri.Builder();
                     mUrl = "image.tmdb.org";
@@ -292,6 +322,7 @@ public class MainActivityFragment extends Fragment {
                     }
                     imageURLs[i] = imgUrl;
                     imageUrlArray[i] = imgURL.toString();
+                    movieIDArray[i] = movID;
 
 
                 }
@@ -305,6 +336,20 @@ public class MainActivityFragment extends Fragment {
 
         }
 
+        /*
+         This code receives the moviesJsonStr and returns an array of image Urls.
+         */
+
+        /*
+        We are using the below warpper class so that doInBackground can send multiple arrays to onPostExecute
+        http://stackoverflow.com/questions/11833978/asynctask-pass-two-or-more-values-from-doinbackground-to-onpostexecute
+         */
+        public class Wrapper {
+            public int[] w_movieIDArray;
+            public String[] w_imageUrlArray;
+        }
+
+
     }
 
 
@@ -313,6 +358,7 @@ public class MainActivityFragment extends Fragment {
         private String[] mThumbIds;
         private Context mContext;
         private LayoutInflater inflater;
+        private int[] movIDArray;
 
 
 
@@ -332,11 +378,13 @@ public class MainActivityFragment extends Fragment {
             FetchMovie fetch = new FetchMovie(c);
             try {
                 if (MainActivityFragment.this.popular == true) {
-                    mThumbIds = fetch.execute("popular").get();
+                    mThumbIds = fetch.execute("popular").get().w_imageUrlArray;
+                    movIDArray = fetch.execute("popular").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-true");
                 }
                 else {
-                    mThumbIds = fetch.execute("top_rated").get();
+                    mThumbIds = fetch.execute("top_rated").get().w_imageUrlArray;
+                    movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-false");
                 }
 
@@ -364,6 +412,7 @@ public class MainActivityFragment extends Fragment {
             return position;
 
         }
+
 
         @Override
         public void notifyDataSetChanged() // Create this function in your adapter class
