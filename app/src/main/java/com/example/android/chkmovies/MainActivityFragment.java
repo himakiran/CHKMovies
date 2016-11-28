@@ -66,8 +66,7 @@ public class MainActivityFragment extends Fragment {
         Log.v("CHK-UPDT-VIEW", item.toString());
 
         IMG.notifyDataSetChanged();
-        gridview.invalidateViews();
-        gridview.refreshDrawableState();
+
 
     }
     @Override
