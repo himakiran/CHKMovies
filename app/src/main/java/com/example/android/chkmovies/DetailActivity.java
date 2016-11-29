@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,7 +51,7 @@ public class DetailActivity extends AppCompatActivity {
     public static class PlaceholderFragment extends Fragment {
         public String moviesJsonStr;
         public String MovieName;
-        public URL MoviePoster;
+        public String MoviePoster;
         public String MovieReleaseDate;
         public int MovieRunTime;
         public String MovieRating;
@@ -80,15 +78,15 @@ public class DetailActivity extends AppCompatActivity {
             TextView textView = (TextView) rootView.findViewById(R.id.d_textView);
             textView.setText(MovieName);
             ImageView imgView = (ImageView) rootView.findViewById(R.id.imageView);
-            Picasso
+            /*Picasso
                     .with(getContext())
                     .load(MoviePoster.toString())
                     .fit()
-                    .into(imgView);
+                    .into(imgView);*/
             textView = (TextView) rootView.findViewById(R.id.textView3);
             textView.setText(MovieReleaseDate);
             textView = (TextView) rootView.findViewById(R.id.textView7);
-            textView.setText(MovieRunTime);
+           /* textView.setText(MovieRunTime); */
             textView = (TextView) rootView.findViewById(R.id.textView8);
             textView.setText(MovieRating);
             Button btn = (Button) rootView.findViewById(R.id.button2);
@@ -101,7 +99,7 @@ public class DetailActivity extends AppCompatActivity {
             textView = (TextView) rootView.findViewById(R.id.textView9);
             textView.setText(MovieReview);
             VideoView vview = (VideoView) rootView.findViewById(R.id.videoView);
-            vview.setVideoURI(Uri.parse(MovieTrailer));
+            // vview.setVideoURI(Uri.parse(MovieTrailer));
             return rootView;
         }
 
@@ -239,12 +237,9 @@ public class DetailActivity extends AppCompatActivity {
                             .appendPath("p")
                             .appendPath("w185")
                             .appendPath(movieJson.getString("poster_path"));
-                    try {
-                        MoviePoster = new URL(imgURL.build().toString());
-                    } catch (java.net.MalformedURLException e) {
-                        Log.e("CHK-MALFORM-URL", "IMAGE-URL", e);
-                        MoviePoster = null;
-                    }
+
+                    MoviePoster = imgURL.build().toString();
+
                     MovieReleaseDate = movieJson.getString("release_date");
                     MovieRunTime = movieJson.getInt("runtime");
                     MovieRating = movieJson.getString("vote_average");
@@ -268,7 +263,7 @@ public class DetailActivity extends AppCompatActivity {
              */
             public class Wrapper {
                 public String w_MovieName;
-                public URL w_MoviePoster;
+                public String w_MoviePoster;
                 public String w_MovieReleaseDate;
                 public int w_MovieRunTime;
                 public String w_MovieRating;

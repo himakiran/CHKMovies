@@ -41,6 +41,10 @@ public class MainActivityFragment extends Fragment {
 
     // IMG is the imageadpater that gets executed in postexecute of fetchMovie.
     public ImageAdapter IMG;
+
+    public String[] imageUrlArray;
+    public int[] movieIDArray;
+
     // stores the value of the toggle setting
     public Boolean popular = true;
 
@@ -130,7 +134,7 @@ public class MainActivityFragment extends Fragment {
                 function in detailActivity to set the Uri.
                  */
 
-                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra("mov_ID", IMG.movIDArray[position]);
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra("mov_ID", movieIDArray[position]);
 
                 startActivity(intent);
             }
@@ -147,8 +151,7 @@ public class MainActivityFragment extends Fragment {
 
         // Will contain the raw JSON response as a string.
         public String moviesJsonStr;
-        public String[] imageUrlArray;
-        public int[] movieIDArray;
+
         public Context fcontext;
 
 
