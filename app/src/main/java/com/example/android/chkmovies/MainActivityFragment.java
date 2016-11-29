@@ -133,7 +133,7 @@ public class MainActivityFragment extends Fragment {
                 It also passes geo which shall be used by the if (id == R.id.detail_see_map)
                 function in detailActivity to set the Uri.
                  */
-
+                Log.v("CHK-MAINACTFRAG", String.valueOf(movieIDArray[position]));
                 Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra("mov_ID", movieIDArray[position]);
 
                 startActivity(intent);

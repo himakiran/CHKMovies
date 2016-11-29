@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -44,6 +46,24 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        return super.onOptionsItemSelected(item);
+
+
+    }
 
     /*
         This fragment shall hold the detail_main layout
@@ -53,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieName;
         public String MoviePoster;
         public String MovieReleaseDate;
-        public int MovieRunTime;
+        public Integer MovieRunTime;
         public String MovieRating;
         public String MovieReview;
         public String MovieTrailer;
@@ -71,6 +91,8 @@ public class DetailActivity extends AppCompatActivity {
              */
             Intent intent = getActivity().getIntent();
             int movieID = intent.getIntExtra("mov_ID", 0);
+            Log.v("CHK-DETAIL-ACT", String.valueOf(movieID));
+
             /*
             And this is how we set the text of any textview
              */
@@ -181,6 +203,7 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 try {
+                    Log.v("CHK-DETAIL-ACTVIVTY", moviesJsonStr);
                     getMovieParameters(moviesJsonStr);
                 } catch (Exception e) {
                     Log.e("CHK-DO-IN-BACKGROUND", "CHK-GET-IMG-URL", e);
