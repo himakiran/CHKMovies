@@ -14,10 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,6 +79,10 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieReview;
         public String MovieTrailer;
 
+        public DetailElementsArray darray;
+
+
+
         public PlaceholderFragment() {
         }
 
@@ -85,47 +90,59 @@ public class DetailActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.detail_main, container, false);
+            View rootView = inflater.inflate(R.layout.detail_activity, container, false);
             /*
             This is how we receive the parameters from the intent passed by another activity.
              */
             Intent intent = getActivity().getIntent();
             int movieID = intent.getIntExtra("mov_ID", 0);
             Log.v("CHK-DETAIL-ACT", String.valueOf(movieID));
-
             /*
-            And this is how we set the text of any textview
+            This code runs the asynctask which gets the movie parameters
              */
+            GetMovie getmv = new GetMovie(getContext());
+            try {
+                darray = getmv.execute(movieID).get();
 
-            TextView textView = (TextView) rootView.findViewById(R.id.d_textView);
-            textView.setText(MovieName);
+            } catch (java.util.concurrent.ExecutionException | java.lang.InterruptedException k) {
+                Log.e("CHK-IMG-ADP-Fetch", "getmv", k);
+            }
+            Log.v("CHK-DETAILACTVITY-ASYNC", darray.toString());
+            /*
+            Now we populate the view
+             */
             ImageView imgView = (ImageView) rootView.findViewById(R.id.imageView);
-            /*Picasso
+            Picasso
                     .with(getContext())
-                    .load(MoviePoster.toString())
+                    .load(darray.MoviePoster)
                     .fit()
-                    .into(imgView);*/
-            textView = (TextView) rootView.findViewById(R.id.textView3);
-            textView.setText(MovieReleaseDate);
-            textView = (TextView) rootView.findViewById(R.id.textView7);
-           /* textView.setText(MovieRunTime); */
-            textView = (TextView) rootView.findViewById(R.id.textView8);
-            textView.setText(MovieRating);
-            Button btn = (Button) rootView.findViewById(R.id.button2);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // adds the movie to a favorite list that is locally stored.
-                }
-            });
-            textView = (TextView) rootView.findViewById(R.id.textView9);
-            textView.setText(MovieReview);
-            VideoView vview = (VideoView) rootView.findViewById(R.id.videoView);
-            // vview.setVideoURI(Uri.parse(MovieTrailer));
+                    .into(imgView);
+
+            TextView txtView = (TextView) rootView.findViewById(R.id.d_textView);
+            txtView.setText(darray.MovieName);
+
+            TextView txtView3 = (TextView) rootView.findViewById(R.id.textView3);
+            txtView3.setText(darray.MovieReleaseDate);
+
+            TextView txtView7 = (TextView) rootView.findViewById(R.id.textView7);
+            //txtView7.setText(darray.MovieRunTime);
+
+            TextView txtView8 = (TextView) rootView.findViewById(R.id.textView8);
+            txtView8.setText(darray.MovieRating);
+
+            TextView txtView9 = (TextView) rootView.findViewById(R.id.textView9);
+            txtView9.setText(darray.MovieReview);
+
+            VideoView vidView = (VideoView) rootView.findViewById(R.id.videoView);
+            vidView.setVideoURI(Uri.parse(darray.MovieTrailer));
+
+
+
+
             return rootView;
         }
 
-        public class GetMovie extends AsyncTask<Integer, String, GetMovie.Wrapper> {
+        public class GetMovie extends AsyncTask<Integer, String, DetailElementsArray> {
 
             // Will contain the raw JSON response as a string.
 
@@ -141,7 +158,7 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             @Override
-            protected Wrapper doInBackground(Integer... params) {
+            protected DetailElementsArray doInBackground(Integer... params) {
 
                 Integer movieID = params[0];
                 HttpURLConnection urlConnection = null;
@@ -209,26 +226,22 @@ public class DetailActivity extends AppCompatActivity {
                     Log.e("CHK-DO-IN-BACKGROUND", "CHK-GET-IMG-URL", e);
                 }
                 GetMovie.Wrapper w = new GetMovie.Wrapper();
-                w.w_MovieName = MovieName;
-                w.w_MoviePoster = MoviePoster;
-                w.w_MovieReleaseDate = MovieReleaseDate;
-                w.w_MovieRunTime = MovieRunTime;
-                w.w_MovieRating = MovieRating;
-                w.w_MovieReview = MovieReview;
-                w.w_MovieTrailer = MovieTrailer;
+                w.w_Array = new DetailElementsArray(MovieName, MoviePoster, MovieReleaseDate, MovieRunTime, MovieRating, MovieReview, MovieTrailer);
 
-                return w;
+                return w.w_Array;
 
 
             }
 
             @Override
-            protected void onPostExecute(GetMovie.Wrapper w) {
+            protected void onPostExecute(DetailElementsArray d) {
                 //You will get your string array result here .
                 // do whatever operations you want to do
-                super.onPostExecute(w);
+
                 //Log.v("CHK-FETCH", "CHK-postexec");
 
+                Log.v("CHK-DETacvty-ASYNC-post", darray.toString());
+                super.onPostExecute(d);
 
                 return;
             }
@@ -277,21 +290,20 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
             }
-            /* This code receives the moviesJsonStr and returns an array of image Urls.
-                    */
 
             /*
             We are using the below warpper class so that doInBackground can send multiple arrays to onPostExecute
             http://stackoverflow.com/questions/11833978/asynctask-pass-two-or-more-values-from-doinbackground-to-onpostexecute
              */
             public class Wrapper {
-                public String w_MovieName;
+                public DetailElementsArray w_Array;
+                /*public String w_MovieName;
                 public String w_MoviePoster;
                 public String w_MovieReleaseDate;
                 public int w_MovieRunTime;
                 public String w_MovieRating;
                 public String w_MovieReview;
-                public String w_MovieTrailer;
+                public String w_MovieTrailer;*/
             }
 
 
