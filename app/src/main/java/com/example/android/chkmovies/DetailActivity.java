@@ -20,7 +20,7 @@ import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -70,6 +71,9 @@ public class DetailActivity extends AppCompatActivity {
         This fragment shall hold the detail_main layout
      */
     public static class PlaceholderFragment extends Fragment {
+        /*
+        Below vars hold the values which shall be diaplyed in the detail_main.xml layout
+         */
         public String moviesJsonStr;
         public String MovieName;
         public String MoviePoster;
@@ -78,8 +82,12 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieRating;
         public String MovieReview;
         public String MovieTrailer;
+        public String[] list_Of_Trailers;
 
+        // DetailElementArray is a custom array defined in a separate claas file that hols all the above vars in one structure.
+        // The asynctask getMovie ouptuts the result of the backgorund task as a instance of DetailElementArray
         public DetailElementsArray darray;
+
 
 
 
@@ -98,7 +106,7 @@ public class DetailActivity extends AppCompatActivity {
             int movieID = intent.getIntExtra("mov_ID", 0);
             Log.v("CHK-DETAIL-ACT", String.valueOf(movieID));
             /*
-            This code runs the asynctask which gets the movie parameters
+            This code runs the asynctask which gets the movie parameters and returns to postexec as a instance of DetailElementsArray
              */
             GetMovie getmv = new GetMovie(getContext());
             try {
@@ -109,7 +117,7 @@ public class DetailActivity extends AppCompatActivity {
             }
             Log.v("CHK-DETAILACTVITY-ASYNC", darray.toString());
             /*
-            Now we populate the view
+            Now we populate all the views in detail_main layout with the values returned in darray which is an instance of DetailElementsArray
              */
             ImageView imgView = (ImageView) rootView.findViewById(R.id.imageView);
             Picasso
@@ -125,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
             txtView3.setText(darray.MovieReleaseDate);
 
             TextView txtView7 = (TextView) rootView.findViewById(R.id.textView7);
-            //txtView7.setText(darray.MovieRunTime);
+            txtView7.setText(String.valueOf(darray.MovieRunTime) + " Mins");
 
             TextView txtView8 = (TextView) rootView.findViewById(R.id.textView8);
             txtView8.setText(darray.MovieRating);
@@ -133,8 +141,18 @@ public class DetailActivity extends AppCompatActivity {
             TextView txtView9 = (TextView) rootView.findViewById(R.id.textView9);
             txtView9.setText(darray.MovieReview);
 
-            VideoView vidView = (VideoView) rootView.findViewById(R.id.videoView);
-            vidView.setVideoURI(Uri.parse(darray.MovieTrailer));
+
+            VideoView vidView = (VideoView) rootView.findViewById(R.id.videoView1);
+
+            vidView.setVideoURI(Uri.parse(darray.List_Of_Trailers[0]));
+            vidView.requestFocus();
+            vidView.start();
+
+            vidView = (VideoView) rootView.findViewById(R.id.videoView2);
+            vidView.setVideoURI(Uri.parse(darray.List_Of_Trailers[1]));
+            vidView.requestFocus();
+            vidView.start();
+
 
 
 
@@ -220,13 +238,13 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 try {
-                    Log.v("CHK-DETAIL-ACTVIVTY", moviesJsonStr);
-                    getMovieParameters(moviesJsonStr);
+                    Log.v("CHK-DETAIL-ACTIVITY", moviesJsonStr);
+                    getMovieParameters(moviesJsonStr, movieID);
                 } catch (Exception e) {
                     Log.e("CHK-DO-IN-BACKGROUND", "CHK-GET-IMG-URL", e);
                 }
                 GetMovie.Wrapper w = new GetMovie.Wrapper();
-                w.w_Array = new DetailElementsArray(MovieName, MoviePoster, MovieReleaseDate, MovieRunTime, MovieRating, MovieReview, MovieTrailer);
+                w.w_Array = new DetailElementsArray(MovieName, MoviePoster, MovieReleaseDate, MovieRunTime, MovieRating, MovieReview, MovieTrailer, list_Of_Trailers);
 
                 return w.w_Array;
 
@@ -251,15 +269,14 @@ public class DetailActivity extends AppCompatActivity {
 
      */
 
-            public void getMovieParameters(String movieStr) {
+            public void getMovieParameters(String movieStr, Integer mvID) {
 
-                JSONObject movieObject;
-                String imgPath;
-                URL imgUrl;
-                Uri.Builder imgURL;
-                String mUrl;
 
-                int movID;
+                Uri.Builder imgURL, vidURL, trailerURL;
+                String mUrl, tUrl;
+                String trailerJsonStr;
+
+
 
 
                 try {
@@ -272,22 +289,109 @@ public class DetailActivity extends AppCompatActivity {
                             .appendPath("t")
                             .appendPath("p")
                             .appendPath("w185")
-                            .appendPath(movieJson.getString("poster_path"));
+                            .appendPath(movieJson.getString("poster_path").substring(1));
 
                     MoviePoster = imgURL.build().toString();
+                    Log.v("CHK-GET-MOV-PRM", MoviePoster);
 
                     MovieReleaseDate = movieJson.getString("release_date");
                     MovieRunTime = movieJson.getInt("runtime");
                     MovieRating = movieJson.getString("vote_average");
                     MovieReview = movieJson.getString("overview");
-                    MovieTrailer = movieJson.getString("video");
 
+                    vidURL = new Uri.Builder();
+                    trailerURL = new Uri.Builder();
+                    mUrl = "api.themoviedb.org";
+                    tUrl = "youtu.be";
+                    vidURL.scheme("https")
+                            .authority(mUrl)
+                            .appendPath("3")
+                            .appendPath("movie")
+                            .appendPath(String.valueOf(mvID))
+                            .appendPath("videos")
+                            .appendQueryParameter("api_key", "c690562b8ea669d80e602902ea80a888");
+                    MovieTrailer = vidURL.build().toString();
+                    Log.v("CHK-MOV-TRLR", MovieTrailer);
+                    /*
+                    Now we use the above url to form a url connection and save the resulting jsonstr
+                     */
 
-                } catch (JSONException j) {
-                    Log.e("CHK-JSON-ISSUE", "json-object", j);
+                    HttpURLConnection urlConn = null;
+                    BufferedReader rdr = null;
+                    URL url;
 
+                    try {
+                        url = new URL(MovieTrailer);
+                        urlConn = (HttpURLConnection) url.openConnection();
+                        urlConn.setRequestMethod("GET");
+                        urlConn.connect();
 
+                        // Read the input stream into a String
+                        InputStream inputStream = urlConn.getInputStream();
+                        StringBuffer buffer = new StringBuffer();
+                        if (inputStream == null) {
+                            // Nothing to do.
+                            trailerJsonStr = null;
+                        }
+                        rdr = new BufferedReader(new InputStreamReader(inputStream));
+
+                        String line;
+                        while ((line = rdr.readLine()) != null) {
+                            // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                            // But it does make debugging a *lot* easier if you print out the completed
+                            // buffer for debugging.
+                            buffer.append(line + "\n");
+                        }
+
+                        if (buffer.length() == 0) {
+                            // Stream was empty.  No point in parsing.
+                            trailerJsonStr = null;
+                        }
+                        trailerJsonStr = buffer.toString();
+                    } catch (IOException e) {
+                        Log.e("CHK-MV-TRAILER", "Error ", e);
+
+                        // If the code didn't successfully get the movie data, there's no point in attempting
+                        // to parse it.
+                        trailerJsonStr = null;
+                    } finally {
+                        if (urlConn != null) {
+                            urlConn.disconnect();
+                        }
+                        if (rdr != null) {
+                            try {
+                                rdr.close();
+                            } catch (final IOException e) {
+                                Log.e("CHK-MV-TRAILER", "Error closing stream", e);
+                            }
+                        }
+                    }
+                    Log.v("CHK-TRLR-JSON", trailerJsonStr);
+                    JSONObject vidJson = new JSONObject(trailerJsonStr);
+                    JSONArray list_of_movies = vidJson.getJSONArray("results");
+                    Log.v("CHK-TRLR-JSON", String.valueOf(list_of_movies.length()));
+                    JSONObject temp;
+                    String tempTrailer;
+                    list_Of_Trailers = new String[list_of_movies.length()];
+                    for (int i = 0; i < list_of_movies.length(); i++) {
+                        temp = list_of_movies.getJSONObject(i);
+                        if (temp.getString("type").equals("Trailer")) {
+                            trailerURL.scheme("https")
+                                    .authority(tUrl)
+                                    .appendPath(temp.getString("key"));
+                            tempTrailer = trailerURL.build().toString();
+                            list_Of_Trailers[i] = tempTrailer;
+
+                        }
+                    }
+                    Log.v("CHK-darray", list_Of_Trailers[0]);
+                    Log.v("CHK-darray", list_Of_Trailers[1]);
+
+                } catch (org.json.JSONException j) {
+                    Log.e("CHK-MV-TRAILER", "URL-ERROR", j);
                 }
+
+
 
             }
 

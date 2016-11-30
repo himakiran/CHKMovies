@@ -76,8 +76,14 @@
         android:textAlignment="center"
         android:textSize="18sp" />
 
+
     <VideoView
-        android:id="@+id/videoView"
+        android:id="@+id/videoView1"
+        android:layout_width="match_parent"
+        android:layout_height="110dp" />
+
+    <VideoView
+        android:id="@+id/videoView2"
         android:layout_width="match_parent"
         android:layout_height="110dp" />
 

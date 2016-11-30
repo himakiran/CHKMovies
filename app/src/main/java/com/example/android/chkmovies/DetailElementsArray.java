@@ -12,9 +12,10 @@ public class DetailElementsArray {
     public String MovieRating;
     public String MovieReview;
     public String MovieTrailer;
+    public String[] List_Of_Trailers;
 
     public DetailElementsArray(String mvName, String mvPoster, String mvReleaseDate, Integer mvRunTime,
-                               String mvRating, String mvReview, String mvTrailer) {
+                               String mvRating, String mvReview, String mvTrailer, String[] trl) {
         this.MovieName = mvName;
         this.MoviePoster = mvPoster;
         this.MovieReleaseDate = mvReleaseDate;
@@ -22,6 +23,7 @@ public class DetailElementsArray {
         this.MovieRating = mvRating;
         this.MovieReview = mvReview;
         this.MovieTrailer = mvTrailer;
+        this.List_Of_Trailers = trl;
     }
 
 }
