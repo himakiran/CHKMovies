@@ -16,8 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -83,6 +84,9 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieReview;
         public String MovieTrailer;
         public String[] list_Of_Trailers;
+        public YouTubePlayer youTubePlayer;
+        public YouTubePlayerFragment youTubePlayerFragment;
+
 
         // DetailElementArray is a custom array defined in a separate claas file that hols all the above vars in one structure.
         // The asynctask getMovie ouptuts the result of the backgorund task as a instance of DetailElementArray
@@ -141,17 +145,18 @@ public class DetailActivity extends AppCompatActivity {
             TextView txtView9 = (TextView) rootView.findViewById(R.id.textView9);
             txtView9.setText(darray.MovieReview);
 
+            /*
+              We r using this guide to help us play youtube videos in the app
 
-            VideoView vidView = (VideoView) rootView.findViewById(R.id.videoView1);
+            http://www.androidhive.info/2014/12/how-to-play-youtube-video-in-android-app/
+            https://www.sitepoint.com/using-the-youtube-api-to-embed-video-in-an-android-app/
+            http://android-er.blogspot.in/2013/06/example-to-use-youtubeplayerfragment-of.html
+            http://createdineden.com/blog/post/android-tutorial-how-to-integrate-youtube-videos-into-your-app/
+            */
 
-            vidView.setVideoURI(Uri.parse(darray.List_Of_Trailers[0]));
-            vidView.requestFocus();
-            vidView.start();
 
-            vidView = (VideoView) rootView.findViewById(R.id.videoView2);
-            vidView.setVideoURI(Uri.parse(darray.List_Of_Trailers[1]));
-            vidView.requestFocus();
-            vidView.start();
+            final YouTubeFragment fragment = (YouTubeFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_youtube);
+            fragment.setVideoId(darray.List_Of_Trailers[0]);
 
 
 
@@ -159,6 +164,7 @@ public class DetailActivity extends AppCompatActivity {
 
             return rootView;
         }
+
 
         public class GetMovie extends AsyncTask<Integer, String, DetailElementsArray> {
 
@@ -190,7 +196,7 @@ public class DetailActivity extends AppCompatActivity {
                             .appendPath("3")
                             .appendPath("movie")
                             .appendPath(String.valueOf(movieID))
-                            .appendQueryParameter("api_key", "c690562b8ea669d80e602902ea80a888");
+                            .appendQueryParameter("api_key", Config.movDBAPIKey);
                     URL url = new URL(movieURL.build().toString());
 
                     urlConnection = (HttpURLConnection) url.openConnection();

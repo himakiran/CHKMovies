@@ -4,5 +4,7 @@
     <string name="api_key">c690562b8ea669d80e602902ea80a888</string>
     <string name="popular">Popular</string>
     <string name="toprated">Top Rated</string>
+    <string name="player_error">Error initializing YouTube player</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="error_init_failure">Error-Youtube</string>
 </resources>
