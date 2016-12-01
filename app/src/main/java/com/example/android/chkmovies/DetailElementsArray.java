@@ -1,5 +1,7 @@
 package com.example.android.chkmovies;
 
+import java.util.ArrayList;
+
 /**
  * Created by userhk on 29/11/16.
  */
@@ -12,10 +14,10 @@ public class DetailElementsArray {
     public String MovieRating;
     public String MovieReview;
     public String MovieTrailer;
-    public String[] List_Of_Trailers;
+    public ArrayList<String> List_Of_Trailers;
 
     public DetailElementsArray(String mvName, String mvPoster, String mvReleaseDate, Integer mvRunTime,
-                               String mvRating, String mvReview, String mvTrailer, String[] trl) {
+                               String mvRating, String mvReview, String mvTrailer, ArrayList<String> trl) {
         this.MovieName = mvName;
         this.MoviePoster = mvPoster;
         this.MovieReleaseDate = mvReleaseDate;

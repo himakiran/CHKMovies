@@ -2,6 +2,7 @@ package com.example.android.chkmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,8 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
@@ -30,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -45,6 +49,10 @@ public class DetailActivity extends AppCompatActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        /*
+                    We now implement a shared preference file to store all favorite movies
+             */
+
 
 
     }
@@ -83,9 +91,10 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieRating;
         public String MovieReview;
         public String MovieTrailer;
-        public String[] list_Of_Trailers;
+        public ArrayList<String> list_Of_Trailers;
         public YouTubePlayer youTubePlayer;
         public YouTubePlayerFragment youTubePlayerFragment;
+        public int movieID;
 
 
         // DetailElementArray is a custom array defined in a separate claas file that hols all the above vars in one structure.
@@ -107,7 +116,7 @@ public class DetailActivity extends AppCompatActivity {
             This is how we receive the parameters from the intent passed by another activity.
              */
             Intent intent = getActivity().getIntent();
-            int movieID = intent.getIntExtra("mov_ID", 0);
+            movieID = intent.getIntExtra("mov_ID", 0);
             Log.v("CHK-DETAIL-ACT", String.valueOf(movieID));
             /*
             This code runs the asynctask which gets the movie parameters and returns to postexec as a instance of DetailElementsArray
@@ -120,6 +129,22 @@ public class DetailActivity extends AppCompatActivity {
                 Log.e("CHK-IMG-ADP-Fetch", "getmv", k);
             }
             Log.v("CHK-DETAILACTVITY-ASYNC", darray.toString());
+
+            final SharedPreferences sharedPref = getContext().getSharedPreferences(
+                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+            Button button = (Button) rootView.findViewById(R.id.button2);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View rootView) {
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(getString(R.string.fav_movie_list), movieID);
+                    editor.commit();
+                    Log.v("CHK-FAV-BTN", "BTN-CLICKED");
+                    Toast.makeText(getActivity().getApplicationContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();
+
+
+                }
+            });
             /*
             Now we populate all the views in detail_main layout with the values returned in darray which is an instance of DetailElementsArray
              */
@@ -156,7 +181,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
             final YouTubeFragment fragment = (YouTubeFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_youtube);
-            fragment.setVideoId(darray.List_Of_Trailers[0]);
+            fragment.setVideoId(darray.List_Of_Trailers.get(0));
 
 
 
@@ -378,7 +403,7 @@ public class DetailActivity extends AppCompatActivity {
                     Log.v("CHK-TRLR-JSON", String.valueOf(list_of_movies.length()));
                     JSONObject temp;
                     String tempTrailer;
-                    list_Of_Trailers = new String[list_of_movies.length()];
+                    list_Of_Trailers = new ArrayList<String>();
                     for (int i = 0; i < list_of_movies.length(); i++) {
                         temp = list_of_movies.getJSONObject(i);
                         if (temp.getString("type").equals("Trailer")) {
@@ -386,12 +411,15 @@ public class DetailActivity extends AppCompatActivity {
                                     .authority(tUrl)
                                     .appendPath(temp.getString("key"));
                             tempTrailer = trailerURL.build().toString();
-                            list_Of_Trailers[i] = tempTrailer;
+                            list_Of_Trailers.add(i, tempTrailer);
 
+                        } else {
+                            list_Of_Trailers.add(i, null);
                         }
+
                     }
-                    Log.v("CHK-darray", list_Of_Trailers[0]);
-                    Log.v("CHK-darray", list_Of_Trailers[1]);
+                    Log.v("CHK-darray", list_Of_Trailers.get(0));
+                    Log.v("CHK-darray", list_Of_Trailers.get(1));
 
                 } catch (org.json.JSONException j) {
                     Log.e("CHK-MV-TRAILER", "URL-ERROR", j);
