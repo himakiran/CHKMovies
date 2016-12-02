@@ -73,7 +73,7 @@ public class YouTubeFragment extends YouTubePlayerSupportFragment implements You
             if (restored) {
                 youTubePlayer.play();
             } else {
-                youTubePlayer.loadVideo(mVideoId);
+                youTubePlayer.cueVideo(mVideoId);
             }
         }
     }

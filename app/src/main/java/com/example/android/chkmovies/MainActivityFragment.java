@@ -75,6 +75,7 @@ public class MainActivityFragment extends Fragment {
 
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -99,16 +100,12 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // first we get the rootView
 
         View rootView = inflater.inflate(fragment_main, container, false);
-
-
 
 
         // The we use the rootview to get the gridview
@@ -141,8 +138,6 @@ public class MainActivityFragment extends Fragment {
         });
 
 
-
-
         return rootView;
     }
 
@@ -150,15 +145,14 @@ public class MainActivityFragment extends Fragment {
     public class FetchMovie extends AsyncTask<String, String, FetchMovie.Wrapper> {
 
         // Will contain the raw JSON response as a string.
-        public String moviesJsonStr;
+        private String moviesJsonStr;
 
-        public Context fcontext;
-
+        private Context fcontext;
 
 
         // Will store the context
 
-        public FetchMovie(Context c) {
+        private FetchMovie(Context c) {
 
             fcontext = c;
         }
@@ -192,7 +186,7 @@ public class MainActivityFragment extends Fragment {
                         .appendPath("3")
                         .appendPath("movie")
                         .appendPath(moviesType)
-                        .appendQueryParameter("api_key", "c690562b8ea669d80e602902ea80a888");
+                        .appendQueryParameter("api_key", Config.movDBAPIKey);
 
                 // Create the request to OpenWeatherMap, and open the connection
                 URL url = new URL(movieURL.build().toString());
@@ -223,6 +217,7 @@ public class MainActivityFragment extends Fragment {
                     moviesJsonStr = null;
                 }
                 moviesJsonStr = buffer.toString();
+                Log.v("CHK-FETCH", moviesJsonStr);
             } catch (IOException e) {
                 Log.e("PlaceholderFragment", "Error ", e);
                 // If the code didn't successfully get the movie data, there's no point in attempting
@@ -263,8 +258,6 @@ public class MainActivityFragment extends Fragment {
             //Log.v("CHK-FETCH", "CHK-postexec");
 
 
-
-            return;
         }
     /*
        This code takes the results of the execution ie array of URLs imageURLArray and movieIDArray  and converts it into
@@ -272,7 +265,7 @@ public class MainActivityFragment extends Fragment {
 
      */
 
-        public void getImageURLsMovieIDs(String movieStr) {
+        private void getImageURLsMovieIDs(String movieStr) {
 
             JSONObject movieObject;
             String imgPath;
@@ -339,8 +332,8 @@ public class MainActivityFragment extends Fragment {
         http://stackoverflow.com/questions/11833978/asynctask-pass-two-or-more-values-from-doinbackground-to-onpostexecute
          */
         public class Wrapper {
-            public int[] w_movieIDArray;
-            public String[] w_imageUrlArray;
+            private int[] w_movieIDArray;
+            private String[] w_imageUrlArray;
         }
 
 
@@ -353,7 +346,6 @@ public class MainActivityFragment extends Fragment {
         private Context mContext;
         private LayoutInflater inflater;
         private int[] movIDArray;
-
 
 
         // Constructor
@@ -371,12 +363,11 @@ public class MainActivityFragment extends Fragment {
 
             FetchMovie fetch = new FetchMovie(c);
             try {
-                if (MainActivityFragment.this.popular == true) {
+                if (MainActivityFragment.this.popular) {
                     mThumbIds = fetch.execute("popular").get().w_imageUrlArray;
                     //movIDArray = fetch.execute("popular").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-true");
-                }
-                else {
+                } else {
                     mThumbIds = fetch.execute("top_rated").get().w_imageUrlArray;
                     //movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-false");
@@ -456,10 +447,6 @@ public class MainActivityFragment extends Fragment {
             return imageView;
         }
     }
-
-
-
-
 
 
 }

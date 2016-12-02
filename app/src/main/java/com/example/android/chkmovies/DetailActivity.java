@@ -20,8 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -44,6 +42,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.detail_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
@@ -52,7 +51,6 @@ public class DetailActivity extends AppCompatActivity {
         /*
                     We now implement a shared preference file to store all favorite movies
              */
-
 
 
     }
@@ -92,16 +90,13 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieReview;
         public String MovieTrailer;
         public ArrayList<String> list_Of_Trailers;
-        public YouTubePlayer youTubePlayer;
-        public YouTubePlayerFragment youTubePlayerFragment;
+
         public int movieID;
 
 
         // DetailElementArray is a custom array defined in a separate claas file that hols all the above vars in one structure.
         // The asynctask getMovie ouptuts the result of the backgorund task as a instance of DetailElementArray
         public DetailElementsArray darray;
-
-
 
 
         public PlaceholderFragment() {
@@ -138,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View rootView) {
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt(getString(R.string.fav_movie_list), movieID);
-                    editor.commit();
+                    editor.apply();
                     Log.v("CHK-FAV-BTN", "BTN-CLICKED");
                     Toast.makeText(getActivity().getApplicationContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();
 
@@ -162,7 +157,7 @@ public class DetailActivity extends AppCompatActivity {
             txtView3.setText(darray.MovieReleaseDate);
 
             TextView txtView7 = (TextView) rootView.findViewById(R.id.textView7);
-            txtView7.setText(String.valueOf(darray.MovieRunTime) + " Mins");
+            txtView7.setText(String.format("%s Mins", String.valueOf(darray.MovieRunTime)));
 
             TextView txtView8 = (TextView) rootView.findViewById(R.id.textView8);
             txtView8.setText(darray.MovieRating);
@@ -184,9 +179,6 @@ public class DetailActivity extends AppCompatActivity {
             fragment.setVideoId(darray.List_Of_Trailers.get(0));
 
 
-
-
-
             return rootView;
         }
 
@@ -196,12 +188,12 @@ public class DetailActivity extends AppCompatActivity {
             // Will contain the raw JSON response as a string.
 
 
-            public Context fcontext;
+            private Context fcontext;
 
 
             // Will store the context
 
-            public GetMovie(Context c) {
+            private GetMovie(Context c) {
 
                 fcontext = c;
             }
@@ -292,7 +284,7 @@ public class DetailActivity extends AppCompatActivity {
                 Log.v("CHK-DETacvty-ASYNC-post", darray.toString());
                 super.onPostExecute(d);
 
-                return;
+
             }
             /*
        This code takes the results of the execution ie array of URLs imageURLArray and movieIDArray  and converts it into
@@ -300,14 +292,12 @@ public class DetailActivity extends AppCompatActivity {
 
      */
 
-            public void getMovieParameters(String movieStr, Integer mvID) {
+            private void getMovieParameters(String movieStr, Integer mvID) {
 
 
                 Uri.Builder imgURL, vidURL, trailerURL;
                 String mUrl, tUrl;
                 String trailerJsonStr;
-
-
 
 
                 try {
@@ -426,7 +416,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
 
-
             }
 
             /*
@@ -434,7 +423,7 @@ public class DetailActivity extends AppCompatActivity {
             http://stackoverflow.com/questions/11833978/asynctask-pass-two-or-more-values-from-doinbackground-to-onpostexecute
              */
             public class Wrapper {
-                public DetailElementsArray w_Array;
+                private DetailElementsArray w_Array;
                 /*public String w_MovieName;
                 public String w_MoviePoster;
                 public String w_MovieReleaseDate;
