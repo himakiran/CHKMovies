@@ -115,8 +115,9 @@ public class MainActivityFragment extends Fragment {
         // we set the image adapter in the gridview and then return the rootview
         // the image adapter is initialized with the movieStrs in the postexecute of fetch task.
         //Log.v("CHK-MAIN-ACTVITY-FRAGT",fetch.imgAdapter.toString());
-        IMG = new ImageAdapter(getContext());
 
+
+        IMG = new ImageAdapter(getContext());
         gridview.setAdapter(IMG);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -137,8 +138,8 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-
         return rootView;
+
     }
 
 
@@ -159,6 +160,8 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected Wrapper doInBackground(String... params) {
+
+
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -172,13 +175,16 @@ public class MainActivityFragment extends Fragment {
 
             String moviesType = params[0];
 
+            /*
+                We will run the background task only if interent connectivity exists
+             */
 
             try {
-            /*
-            Popular Movie URL : https://api.themoviedb.org/3/movie/popular?api_key=c690562b8ea669d80e602902ea80a888
+                        /*
+                            Popular Movie URL : https://api.themoviedb.org/3/movie/popular?api_key=c690562b8ea669d80e602902ea80a888
 
-            Top Rated Movie URL: https://api.themoviedb.org/3/movie/top_rated?api_key=c690562b8ea669d80e602902ea80a888
-             */
+                            Top Rated Movie URL: https://api.themoviedb.org/3/movie/top_rated?api_key=c690562b8ea669d80e602902ea80a888
+                         */
                 Uri.Builder movieURL = new Uri.Builder();
                 String mUrl = "api.themoviedb.org";
                 movieURL.scheme("https")
@@ -234,7 +240,7 @@ public class MainActivityFragment extends Fragment {
                         Log.e("PlaceholderFragment", "Error closing stream", e);
                     }
                 }
-            }
+                    }
 
 
             try {
@@ -352,16 +358,10 @@ public class MainActivityFragment extends Fragment {
         public ImageAdapter(Context c) {
             mContext = c;
             inflater = LayoutInflater.from(c);
-       /* mThumbIds = new String[imageArray.length];
-        for(int i=0; i < imageArray.length; i++){
-            mThumbIds[i] = imageArray[i];
-            Log.v("CHK-mThumbsId",mThumbIds[i]);
-        }*/
-        /*
-           Now we run the fetch task to fetch image urls
-         */
+
 
             FetchMovie fetch = new FetchMovie(c);
+
             try {
                 if (MainActivityFragment.this.popular) {
                     mThumbIds = fetch.execute("popular").get().w_imageUrlArray;
@@ -377,7 +377,11 @@ public class MainActivityFragment extends Fragment {
                 Log.e("CHK-IMG-ADP-Fetch", "fetchtask", k);
             }
 
+
+
+
         }
+
 
         /*
         we r not using the below getCount() , getItem() and getItemId()
