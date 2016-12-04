@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/container"
+        xmlns:tools="http://schemas.android.com/tools"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -13,15 +14,16 @@
         <TextView
             android:id="@+id/d_textView"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="wrap_content"
             android:background="@color/OliveGreen"
             android:padding="60dp"
-            android:text="TextView"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textSize="32sp" />
+            android:textSize="32sp"
+            tools:text="TextView" />
 
         <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="163dp"
             android:orientation="horizontal">
