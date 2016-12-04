@@ -52,6 +52,7 @@ public class DetailActivity extends AppCompatActivity {
         }
         /*
                     We now implement a shared preference file to store all favorite movies
+
              */
 
 
