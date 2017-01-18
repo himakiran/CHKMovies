@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.example.android.chkmovies.DetailActivity.PlaceholderFragment.sf;
 import static com.example.android.chkmovies.R.layout.fragment_main;
 
 /**
@@ -47,6 +48,8 @@ public class MainActivityFragment extends Fragment {
 
     // stores the value of the toggle setting
     public Boolean popular = true;
+    public Boolean top_rated = false;
+    public Boolean favorite = false;
 
     public GridView gridview;
 
@@ -82,6 +85,8 @@ public class MainActivityFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.popular:
                 popular = true;
+                top_rated = false;
+                favorite = false;
                 item.setChecked(true);
                 updateView(item);
                 Log.v("CHK-ONOPTION-POPLR", item.toString());
@@ -89,11 +94,24 @@ public class MainActivityFragment extends Fragment {
                 return true;
             case R.id.top_rated:
                 popular = false;
+                top_rated = true;
+                favorite = false;
                 item.setChecked(true);
                 updateView(item);
                 Log.v("CHK-ONOPTION-RATED", item.toString());
 
                 return true;
+
+            case R.id.favorite:
+                popular = false;
+                top_rated = false;
+                favorite = true;
+                item.setChecked(true);
+                updateView(item);
+                Log.v("CHK-ONOPTION-RATED", item.toString());
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -367,10 +385,14 @@ public class MainActivityFragment extends Fragment {
                     mThumbIds = fetch.execute("popular").get().w_imageUrlArray;
                     //movIDArray = fetch.execute("popular").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-true");
-                } else {
+                } else if (MainActivityFragment.this.top_rated) {
                     mThumbIds = fetch.execute("top_rated").get().w_imageUrlArray;
                     //movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
-                    Log.v("CHK-IMG-ADPTR", "this-poplr-false");
+                    Log.v("CHK-IMG-ADPTR", "this-toprated-true");
+                } else {
+                    mThumbIds = sf.getImgUrlArray();
+                    //movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
+                    Log.v("CHK-IMG-ADPTR", "this-favorite-true");
                 }
 
             } catch (java.util.concurrent.ExecutionException | java.lang.InterruptedException k) {

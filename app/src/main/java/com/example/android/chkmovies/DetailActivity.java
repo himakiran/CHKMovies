@@ -2,7 +2,6 @@ package com.example.android.chkmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -81,6 +80,7 @@ public class DetailActivity extends AppCompatActivity {
         This fragment shall hold the detail_main layout
      */
     public static class PlaceholderFragment extends Fragment {
+        public static final SharedPrefFavorites sf = new SharedPrefFavorites();
         /*
         Below vars hold the values which shall be diaplyed in the detail_main.xml layout
          */
@@ -93,7 +93,6 @@ public class DetailActivity extends AppCompatActivity {
         public String MovieReview;
         public String MovieTrailer;
         public ArrayList<String> list_Of_Trailers;
-
         public int movieID;
 
 
@@ -129,21 +128,35 @@ public class DetailActivity extends AppCompatActivity {
             }
             Log.v("CHK-DETAILACTVITY-ASYNC", darray.toString());
 
-            final SharedPreferences sharedPref = getContext().getSharedPreferences(
-                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//            final SharedPreferences sharedPref = getContext().getSharedPreferences(
+//                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//
+//            Button button = (Button) rootView.findViewById(R.id.button2);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View rootView) {
+//                    SharedPreferences.Editor editor = sharedPref.edit();
+//                    editor.putInt(getString(R.string.fav_movie_list), movieID);
+//                    editor.apply();
+//                    Log.v("CHK-FAV-BTN", "BTN-CLICKED");
+//                    Toast.makeText(getActivity().getApplicationContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();
+//
+//
+//                }
+//            });
 
             Button button = (Button) rootView.findViewById(R.id.button2);
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View rootView) {
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putInt(getString(R.string.fav_movie_list), movieID);
-                    editor.apply();
+
+                    sf.addToFav(getContext(), darray.MoviePoster, movieID);
+
                     Log.v("CHK-FAV-BTN", "BTN-CLICKED");
                     Toast.makeText(getActivity().getApplicationContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();
 
 
                 }
             });
+
             /*
             Now we populate all the views in detail_main layout with the values returned in darray which is an instance of DetailElementsArray
              */
