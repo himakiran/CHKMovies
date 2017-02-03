@@ -32,7 +32,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.example.android.chkmovies.DetailActivity.PlaceholderFragment.sf;
+import static com.example.android.chkmovies.DetailActivityFragment.sf;
 import static com.example.android.chkmovies.R.layout.fragment_main;
 
 /**
