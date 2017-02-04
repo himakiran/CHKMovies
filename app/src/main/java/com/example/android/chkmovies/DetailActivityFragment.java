@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,21 +86,6 @@ public class DetailActivityFragment extends Fragment {
         }
         Log.v("CHK-DETAILACTVITY-ASYNC", darray.toString());
 
-//            final SharedPreferences sharedPref = getContext().getSharedPreferences(
-//                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-//
-//            Button button = (Button) rootView.findViewById(R.id.button2);
-//            button.setOnClickListener(new View.OnClickListener() {
-//                public void onClick(View rootView) {
-//                    SharedPreferences.Editor editor = sharedPref.edit();
-//                    editor.putInt(getString(R.string.fav_movie_list), movieID);
-//                    editor.apply();
-//                    Log.v("CHK-FAV-BTN", "BTN-CLICKED");
-//                    Toast.makeText(getActivity().getApplicationContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();
-//
-//
-//                }
-//            });
 
         Button button = (Button) rootView.findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {
@@ -148,13 +135,19 @@ public class DetailActivityFragment extends Fragment {
             */
 
 
-        final YouTubeFragment fragment = (YouTubeFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_youtube);
+//        YouTubeFragment fragment = (YouTubeFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_youtube);
+//        Log.v("CHK-TRAILERS",darray.List_Of_Trailers.get(0));
+//        Log.v("chk-utube-frag",fragment.toString());
+//        fragment.setVideoId(darray.List_Of_Trailers.get(0));
 
-        if (darray.List_Of_Trailers.get(0) != null) {
-
-            fragment.setVideoId(darray.List_Of_Trailers.get(0));
-        }
-
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.youtube_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        //to use RecycleView, you need a layout manager. default is LinearLayoutManager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        YoutubeAdapter adapter = new YoutubeAdapter(getActivity());
+        recyclerView.setAdapter(adapter);
 
 
         return rootView;
@@ -221,7 +214,7 @@ public class DetailActivityFragment extends Fragment {
                 }
                 moviesJsonStr = buffer.toString();
             } catch (IOException e) {
-                Log.e("PlaceholderFragment", "Error ", e);
+                Log.e("DetailActivityFragment", "Error ", e);
 
                 // If the code didn't successfully get the movie data, there's no point in attempting
                 // to parse it.
@@ -234,7 +227,7 @@ public class DetailActivityFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                        Log.e("DetailActivityFragment", "Error closing stream", e);
                     }
                 }
             }
@@ -372,17 +365,18 @@ public class DetailActivityFragment extends Fragment {
                 JSONObject temp;
                 String tempTrailer;
                 list_Of_Trailers = new ArrayList<String>();
-                for (int i = 0; i < list_of_movies.length(); i++) {
+                for (int i = 0, j = 0; i < list_of_movies.length(); i++) {
                     temp = list_of_movies.getJSONObject(i);
+
                     if (temp.getString("type").equals("Trailer")) {
                         trailerURL.scheme("https")
                                 .authority(tUrl)
-                                .appendPath(temp.getString("key"));
+                                .path(temp.getString("key"));
                         tempTrailer = trailerURL.build().toString();
-                        list_Of_Trailers.add(i, tempTrailer);
 
-                    } else {
-                        list_Of_Trailers.add(i, null);
+                        list_Of_Trailers.add(j++, temp.getString("key"));
+
+
                     }
 
                 }

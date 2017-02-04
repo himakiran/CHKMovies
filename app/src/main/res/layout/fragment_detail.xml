@@ -97,17 +97,13 @@
                 android:textAlignment="center"
                 android:textSize="18sp"
                 tools:text="Movie Review" />
-
-
-            <fragment
-                android:id="@+id/fragment_youtube"
-                android:name="com.example.android.chkmovies.YouTubeFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                />
         </LinearLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/youtube_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
 
     </LinearLayout>
 </ScrollView>

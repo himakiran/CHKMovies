@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="OliveGreen">#7fa87f</color>
     <color name="white">#000000</color>
+    <color name="color_background_transparent">#000000</color>
 </resources>
