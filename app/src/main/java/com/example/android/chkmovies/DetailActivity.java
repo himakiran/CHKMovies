@@ -17,12 +17,17 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DetailActivityFragment())
-                    .commit();
-        }
+/*
+    Commenting the below code has succesfully solved the issue of udacity review : "You have inflated detail_activity layout twice.
+    Here and in onCreate method. " Instead of the below code which was duplicating the inflation of the layout file activity_detail
+    we have added the line <include layout="@layout/content_detail" /> in activty_detail and added the line
+    android:name="com.example.android.chkmovies.DetailActivityFragment" in content_detail.
+ */
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.container, new DetailActivityFragment())
+//                    .commit();
+//        }
         /*
                     We now implement a shared preference file to store all favorite movies
 

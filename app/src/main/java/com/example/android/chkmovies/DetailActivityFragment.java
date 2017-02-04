@@ -65,7 +65,7 @@ public class DetailActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View rootView = inflater.inflate(R.layout.content_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             /*
             This is how we receive the parameters from the intent passed by another activity.
              */
@@ -149,7 +149,12 @@ public class DetailActivityFragment extends Fragment {
 
 
         final YouTubeFragment fragment = (YouTubeFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_youtube);
-        fragment.setVideoId(darray.List_Of_Trailers.get(0));
+
+        if (darray.List_Of_Trailers.get(0) != null) {
+
+            fragment.setVideoId(darray.List_Of_Trailers.get(0));
+        }
+
 
 
         return rootView;
