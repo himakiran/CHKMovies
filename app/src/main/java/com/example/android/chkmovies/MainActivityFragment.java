@@ -47,6 +47,10 @@ public class MainActivityFragment extends Fragment {
 
     public String[] imageUrlArray;
     public int[] movieIDArray;
+    /*
+        Stores the value of the selected menu option ie popular,top_rated or favorite
+     */
+    public String selected_option = "popular";
 
     // stores the value of the toggle setting
     public Boolean popular = true;
@@ -60,11 +64,26 @@ public class MainActivityFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            popular = savedInstanceState.getBoolean("popular");
+            top_rated = savedInstanceState.getBoolean("top_rated");
+            favorite = savedInstanceState.getBoolean("favorite");
+            selected_option = savedInstanceState.getString("selected-option");
+        }
         setHasOptionsMenu(true);
 
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putBoolean("popular", popular);
+        state.putBoolean("top_rated", top_rated);
+        state.putBoolean("favorite", favorite);
+        state.putString("selected-option", selected_option);
+
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Do something that differs the Activity's menu here
@@ -75,7 +94,7 @@ public class MainActivityFragment extends Fragment {
 
     public void updateView(MenuItem item) {
         Log.v("CHK-UPDT-VIEW", item.toString());
-
+        item.setChecked(true);
         IMG.notifyDataSetChanged();
 
 
@@ -89,8 +108,9 @@ public class MainActivityFragment extends Fragment {
                 popular = true;
                 top_rated = false;
                 favorite = false;
-                item.setChecked(true);
+                selected_option = "popular";
                 updateView(item);
+
                 Log.v("CHK-ONOPTION-POPLR", item.toString());
 
                 return true;
@@ -98,7 +118,7 @@ public class MainActivityFragment extends Fragment {
                 popular = false;
                 top_rated = true;
                 favorite = false;
-                item.setChecked(true);
+                selected_option = "top_rated";
                 updateView(item);
                 Log.v("CHK-ONOPTION-RATED", item.toString());
 
@@ -108,7 +128,7 @@ public class MainActivityFragment extends Fragment {
                 popular = false;
                 top_rated = false;
                 favorite = true;
-                item.setChecked(true);
+                selected_option = "favorite";
                 updateView(item);
                 Log.v("CHK-ONOPTION-RATED", item.toString());
 
@@ -117,6 +137,18 @@ public class MainActivityFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (selected_option.equals("popular"))
+            menu.findItem(R.id.popular).setChecked(true);
+        else if (selected_option.equals("top_rated"))
+            menu.findItem(R.id.top_rated).setChecked(true);
+        else
+            menu.findItem(R.id.favorite).setChecked(true);
+
     }
 
 
@@ -138,7 +170,17 @@ public class MainActivityFragment extends Fragment {
 
 
         IMG = new ImageAdapter(getContext());
+        if (savedInstanceState != null) {
+            popular = savedInstanceState.getBoolean("popular");
+            top_rated = savedInstanceState.getBoolean("top_rated");
+            favorite = savedInstanceState.getBoolean("favorite");
+
+            IMG.notifyDataSetChanged();
+
+        }
+
         gridview.setAdapter(IMG);
+
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -173,7 +215,7 @@ public class MainActivityFragment extends Fragment {
 
         // Will store the context
 
-        private FetchMovie(Context c) {
+        public FetchMovie(Context c) {
 
             fcontext = c;
         }

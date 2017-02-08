@@ -238,7 +238,7 @@ public class DetailActivityFragment extends Fragment {
                 Log.v("CHK-DETAIL-ACTIVITY", moviesJsonStr);
                 getMovieParameters(moviesJsonStr, movieID);
             } catch (Exception e) {
-                Log.e("CHK-DO-IN-BACKGROUND", "CHK-GET-IMG-URL", e);
+                Log.e("CHK-DO-IN-BACKGROUND", e.getMessage(), e);
             }
             DetailActivityFragment.GetMovie.Wrapper w = new DetailActivityFragment.GetMovie.Wrapper();
             w.w_Array = new DetailElementsArray(MovieName, MoviePoster, MovieReleaseDate, MovieRunTime, MovieRating, MovieReview, MovieTrailer, list_Of_Trailers);
@@ -399,13 +399,7 @@ public class DetailActivityFragment extends Fragment {
          */
         public class Wrapper {
             private DetailElementsArray w_Array;
-                /*public String w_MovieName;
-                public String w_MoviePoster;
-                public String w_MovieReleaseDate;
-                public int w_MovieRunTime;
-                public String w_MovieRating;
-                public String w_MovieReview;
-                public String w_MovieTrailer;*/
+
         }
 
 
