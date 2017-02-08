@@ -26,11 +26,15 @@ import com.google.android.youtube.player.YouTubeThumbnailView;
 public class YoutubeAdapter extends RecyclerView.Adapter<YoutubeAdapter.VideoInfoHolder> {
 
     //these ids are the unique id for each video
-    String[] VideoID = {"P3mAtvs5Elc", "nCgQDjiotG0", "P3mAtvs5Elc"};
+    String[] VideoID; //{"P3mAtvs5Elc", "nCgQDjiotG0", "P3mAtvs5Elc"};
     Context ctx;
 
-    public YoutubeAdapter(Context context) {
+
+    public YoutubeAdapter(Context context, String[] trlrs) {
+
         this.ctx = context;
+        VideoID = trlrs;
+
     }
 
     @Override

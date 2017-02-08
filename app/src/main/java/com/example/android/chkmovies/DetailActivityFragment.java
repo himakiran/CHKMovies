@@ -39,6 +39,7 @@ import java.util.ArrayList;
      */
 public class DetailActivityFragment extends Fragment {
     public static final SharedPrefFavorites sf = new SharedPrefFavorites();
+    public static String[] trailers;
     /*
     Below vars hold the values which shall be diaplyed in the content_detail.xmlxml layout
      */
@@ -52,8 +53,6 @@ public class DetailActivityFragment extends Fragment {
     public String MovieTrailer;
     public ArrayList<String> list_Of_Trailers;
     public int movieID;
-
-
     // DetailElementArray is a custom array defined in a separate claas file that hols all the above vars in one structure.
     // The asynctask getMovie ouptuts the result of the backgorund task as a instance of DetailElementArray
     public DetailElementsArray darray;
@@ -136,9 +135,13 @@ public class DetailActivityFragment extends Fragment {
 
 
 //        YouTubeFragment fragment = (YouTubeFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_youtube);
-//        Log.v("CHK-TRAILERS",darray.List_Of_Trailers.get(0));
+//        Log.v("CHK-TRAILERS-I",darray.List_Of_Trailers.toString());
 //        Log.v("chk-utube-frag",fragment.toString());
 //        fragment.setVideoId(darray.List_Of_Trailers.get(0));
+
+        trailers = new String[darray.List_Of_Trailers.size()];
+        trailers = darray.List_Of_Trailers.toArray(trailers);
+
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.youtube_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -146,7 +149,7 @@ public class DetailActivityFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        YoutubeAdapter adapter = new YoutubeAdapter(getActivity());
+        YoutubeAdapter adapter = new YoutubeAdapter(getContext(), trailers);
         recyclerView.setAdapter(adapter);
 
 

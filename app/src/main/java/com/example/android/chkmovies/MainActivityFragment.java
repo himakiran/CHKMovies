@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -214,6 +215,7 @@ public class MainActivityFragment extends Fragment {
 
                 // Create the request to OpenWeatherMap, and open the connection
                 URL url = new URL(movieURL.build().toString());
+                Log.v("CHK-Movie-URL",url.toString());
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -225,6 +227,7 @@ public class MainActivityFragment extends Fragment {
                 if (inputStream == null) {
                     // Nothing to do.
                     moviesJsonStr = null;
+
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -239,11 +242,12 @@ public class MainActivityFragment extends Fragment {
                 if (buffer.length() == 0) {
                     // Stream was empty.  No point in parsing.
                     moviesJsonStr = null;
+                    Log.v("chk-buffer","buffer length is zero");
                 }
                 moviesJsonStr = buffer.toString();
                 Log.v("CHK-FETCH", moviesJsonStr);
             } catch (IOException e) {
-                Log.e("PlaceholderFragment", "Error ", e);
+                Log.e("MainActivityFragment", "Error ", e);
                 // If the code didn't successfully get the movie data, there's no point in attempting
                 // to parse it.
                 moviesJsonStr = null;
@@ -255,7 +259,7 @@ public class MainActivityFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                        Log.e("MainActivityFragment", "Error closing stream", e);
                     }
                 }
                     }
@@ -391,7 +395,6 @@ public class MainActivityFragment extends Fragment {
                     Log.v("CHK-IMG-ADPTR", "this-toprated-true");
                 } else {
                     mThumbIds = sf.getImgUrlArray();
-                    //movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-favorite-true");
                 }
 
