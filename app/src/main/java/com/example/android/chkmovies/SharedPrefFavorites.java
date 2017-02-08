@@ -25,6 +25,7 @@ public final class SharedPrefFavorites {
         editor = fav.edit();
         editor.putString("imageUrlArray", f_imageUrlArray.toString());
         editor.putString("movieIdArray", f_movieIdArray.toString());
+
     }
 
     public void addToFav(Context c, String s, int i) {

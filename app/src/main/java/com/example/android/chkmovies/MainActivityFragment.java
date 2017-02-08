@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 import static com.example.android.chkmovies.DetailActivityFragment.sf;
 import static com.example.android.chkmovies.R.layout.fragment_main;
@@ -266,6 +267,7 @@ public class MainActivityFragment extends Fragment {
 
 
             try {
+                Log.v("CHK-MOV-JSON-STR", moviesJsonStr);
                 getImageURLsMovieIDs(moviesJsonStr);
             } catch (Exception e) {
                 Log.e("CHK-DO-IN-BACKGROUND", "CHK-GET-IMG-URL", e);
@@ -387,14 +389,21 @@ public class MainActivityFragment extends Fragment {
             try {
                 if (MainActivityFragment.this.popular) {
                     mThumbIds = fetch.execute("popular").get().w_imageUrlArray;
+
                     //movIDArray = fetch.execute("popular").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-poplr-true");
                 } else if (MainActivityFragment.this.top_rated) {
                     mThumbIds = fetch.execute("top_rated").get().w_imageUrlArray;
+
                     //movIDArray = fetch.execute("top_rated").get().w_movieIDArray;
                     Log.v("CHK-IMG-ADPTR", "this-toprated-true");
                 } else {
                     mThumbIds = sf.getImgUrlArray();
+                    Log.v("CHK-MTHUMSIDS", Arrays.toString(mThumbIds));
+                    if (mThumbIds[0] == null) {
+                        Toast.makeText(getActivity().getApplicationContext(), "No Favorites added yet !!", Toast.LENGTH_LONG).show();
+                    }
+
                     Log.v("CHK-IMG-ADPTR", "this-favorite-true");
                 }
 
