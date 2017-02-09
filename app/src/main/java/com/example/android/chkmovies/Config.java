@@ -5,5 +5,5 @@ package com.example.android.chkmovies;
  */
 
 public class Config {
-
 }
+
